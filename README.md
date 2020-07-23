@@ -16,7 +16,7 @@ The following packages are required by smarted-test
 |--------------|---------------------------------------------------------------|--------------------------|
 | Python       | https://www.python.org/downloads/                             | `3.7`                    |
 | git          | https://git-scm.com/book/en/v2/Getting-Started-Installing-Git | `latest`                 |
-| pip          | https://pip.pypa.io/en/stable/installing/                     | `19.2.3`                 |
+| pipenv       | https://pypi.org/project/pipenv/                              | `2020.6.2`               |
 | mongodb      | https://docs.mongodb.com/manual/installation/                 | `3.9.0  `                |
 
 ## Directory structure

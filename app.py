@@ -5,34 +5,9 @@ from config.app import config
 from bson import ObjectId, Binary, Code, json_util
 from bson.json_util import dumps
 from flask_jwt import JWT, jwt_required, current_identity
-from werkzeug.security import safe_str_cmp
+from security import authenticate, identity 
 import json
 
-class User(object):
-    def __init__(self, id, username, password):
-        self.id = id
-        self.username = username
-        self.password = password
-
-    def __str__(self):
-        return "User(id='%s')" % self.id
-
-users = [
-    User(1, 'user1', 'abcxyz'),
-    User(2, 'user2', 'abcxyz'),
-]
-
-username_table = {u.username: u for u in users}
-userid_table = {u.id: u for u in users}
-
-def authenticate(username, password):
-    user = username_table.get(username, None)
-    if user and safe_str_cmp(user.password.encode('utf-8'), password.encode('utf-8')):
-        return user
-
-def identity(payload):
-    user_id = payload['identity']
-    return userid_table.get(user_id, None)
 
 
 app = Flask(__name__)
@@ -41,10 +16,14 @@ app.config["SECRET_KEY"] = "super-secret"
 
 jwt = JWT(app, authenticate, identity)
 
+
+
 @app.route('/protected')
 @jwt_required()
 def protected():
     return '%s' % current_identity
+
+
 
 @api.route('/users')
 class UserData(Resource):
@@ -52,7 +31,7 @@ class UserData(Resource):
     # Check payload (Documentation)
     parser = reqparse.RequestParser()
     parser.add_argument("name", help='User Name', location='form')
-    parser.add_argument("lastname", help='User Last Name', location='form')
+    parser.add_argument("last_name", help='User Last Name', location='form')
     parser.add_argument("email", help='User Email', location='form')
     parser.add_argument("password", help='User Password', location='form')
 
@@ -66,15 +45,15 @@ class UserData(Resource):
 
         input_data = request.get_json()
         name       = input_data["name"]
-        lastName   = input_data["lastname"]
+        last_name   = input_data["last_name"]
         email      = input_data["email"]
         password   = input_data["password"]
         
         # Check input data
-        if name and lastName and email and password:
+        if name and last_name and email and password:
             user = {
                 "name" : name ,
-                "lastname" : lastName,
+                "last_name" : last_name,
                 "email" : email,
                 "password" : password
             }
@@ -90,8 +69,12 @@ class UserData(Resource):
 
 
 
-@api.route('/users/view') 
+@api.route('/users/list') 
 class UserData(Resource):
+    
+    """
+    Displays all users 
+    """
     @jwt_required()
     def get(self):
         userlist = []
@@ -102,6 +85,23 @@ class UserData(Resource):
 
         return json.loads(json_util.dumps(userlist))
 
+
+
+@api.doc(params={'id': 'The user id'})
+@api.route('/users/<string:id>')
+class UserData(Resource):
+
+    """
+    Displays a single user
+    """
+    @jwt_required()
+    def get(self,id):
+
+        oid = ObjectId(id)
+
+        document = mycollection.find({"_id": oid})
+        
+        return json.loads(json_util.dumps(document))
 
 
 if __name__ == '__main__':

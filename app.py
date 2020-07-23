@@ -1,4 +1,4 @@
-from flask_restplus import Api, Resource, reqparse
+from flask_restx import Api, Resource, reqparse
 from flask import Flask, jsonify, request   
 from config.databases import mycollection
 from config.app import config
@@ -69,7 +69,7 @@ class UserData(Resource):
 
 
 
-@api.route('/users/list') 
+@api.route('/users') 
 class UserData(Resource):
     
     """

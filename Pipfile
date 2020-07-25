@@ -4,15 +4,15 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
+pylint = "*"
 
 [packages]
 flask = "1.1.1"
 bson = "0.58"
-flask-jwt = "0.3.2"
 pymongo = "3.9.0"
 faker = "*"
-werkzeug = "0.16.1"
 flask-restx = "*"
+flask-jwt-extended = "*"
 
 [requires]
 python_version = "3.6"

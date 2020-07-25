@@ -4,28 +4,55 @@ from config.databases import mycollection
 from config.app import config
 from bson import ObjectId, Binary, Code, json_util
 from bson.json_util import dumps
-from flask_jwt import JWT, jwt_required, current_identity
-from security import authenticate, identity 
+from flask_jwt_extended import JWTManager, jwt_required, create_access_token, get_jwt_identity
 import json
 
 
 
 app = Flask(__name__)
 api = Api(app, version='1.0', title='w-mz-ge', description='Smarted test')
+ns = api.namespace('', description="Main app")
 app.config["SECRET_KEY"] = "super-secret"
 
-jwt = JWT(app, authenticate, identity)
+jwt = JWTManager(app)
 
 
 
-@app.route('/protected')
-@jwt_required()
+@app.route('/login', methods=['POST'])
+def login():
+    if not request.is_json:
+        return jsonify({"msg": "Missing JSON in request"}), 400
+
+    username = request.json.get('username', None)
+    password = request.json.get('password', None)
+    if not username:
+        return jsonify({"msg": "Missing username parameter"}), 400
+    if not password:
+        return jsonify({"msg": "Missing password parameter"}), 400
+
+    # Query the DB with username and password fields, if those exist a cursor is returned
+    document = mycollection.find_one({"$and": [{"name": username}, {"password": password}]})
+    
+    # If the query is unsuccesfull, no cursor is returned, then an error is raised
+    if not document:
+        return jsonify({"msg": "Bad username or password"}), 401
+    else:
+        # If the query is succesfull, an access token is created and returned
+        access_token = create_access_token(identity=username)
+        return jsonify(access_token=access_token), 200
+
+
+
+@app.route('/protected', methods=['GET'])
+@jwt_required
 def protected():
-    return '%s' % current_identity
+    # Access the identity of the current user with get_jwt_identity
+    current_user = get_jwt_identity()
+    return jsonify(logged_in_as=current_user), 200
 
 
 
-@api.route('/users')
+@ns.route('/users')
 class UserData(Resource):
 
     # Check payload (Documentation)
@@ -40,7 +67,7 @@ class UserData(Resource):
     """
 
     @api.expect(parser)
-    @jwt_required()
+    @jwt_required
     def post(self):
 
         input_data = request.get_json()
@@ -67,15 +94,11 @@ class UserData(Resource):
         else: 
             return api.abort(400,"Error, one or more fields are required")
 
-
-
-@api.route('/users') 
-class UserData(Resource):
-    
     """
     Displays all users 
     """
-    @jwt_required()
+
+    @jwt_required
     def get(self):
         userlist = []
 
@@ -88,13 +111,14 @@ class UserData(Resource):
 
 
 @api.doc(params={'id': 'The user id'})
-@api.route('/users/<string:id>')
+@ns.route('/users/<string:id>')
 class UserData(Resource):
 
     """
     Displays a single user
     """
-    @jwt_required()
+
+    @jwt_required
     def get(self,id):
 
         oid = ObjectId(id)

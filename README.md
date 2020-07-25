@@ -6,7 +6,7 @@ An API for creating and listing users
 
 ## Summary
 
-An API that creates a user entry, and lists all users
+An API that creates a user entry, lists all users or allows for a single user search.
 
 ## Requirements
 
@@ -14,10 +14,13 @@ The following packages are required by smarted-test
 
 | Package Name | URL                                                           | Minimum required version |
 |--------------|---------------------------------------------------------------|--------------------------|
-| Python       | https://www.python.org/downloads/                             | `3.7`                    |
+| Python       | https://www.python.org/downloads/                             | `3.6`                    |
 | git          | https://git-scm.com/book/en/v2/Getting-Started-Installing-Git | `latest`                 |
 | pipenv       | https://pypi.org/project/pipenv/                              | `2020.6.2`               |
-| mongodb      | https://docs.mongodb.com/manual/installation/                 | `3.9.0  `                |
+| mongodb      | https://docs.mongodb.com/manual/installation/                 | `3.9.0`                  |
+| flask-restx  | https://flask-restx.readthedocs.io/en/latest/                 | `latest`                 |
+| flask-jwt-ext| https://flask-jwt-extended.readthedocs.io/en/stable/          | `latest`                 |
+| faker        | https://faker.readthedocs.io/en/master/                       | `latest`                 |
 
 ## Directory structure
 
@@ -25,6 +28,8 @@ The following packages are required by smarted-test
 $ tree
 ├── config
 ├── app.py
+├── seeds.py
+├── signup.py
 └── README.md
 ```
 
@@ -42,10 +47,20 @@ $ git clone git@github.com:GustavoJE/w-mz-ge.git
 
 2. Install the dependencies
 ```bash
-$ pip install -r requirements.txt
+$ pipenv install 
 ```
 
-3. Run the application
+3. Run signup.py
+```bash
+$ python signup.py
+```
+
+4. Run seeds.py
+```bash
+$ python seeds.py
+```
+
+5. Run the application
 ```bash
 $ python app.py
 ```
@@ -56,8 +71,8 @@ $ python app.py
 |------------------|-------------------------------------|------------------------------------------|----------|
 | **Database**     |                                     |                                          |          |
 | MONGO_HOST       | The hostname of the mongodb         | `mongodb://admin:admin@localhost:27017/` | **yes**  |
-| MONGO_DATABASE   | The name of the mongo's database    | `Smarted`                                | no       |
-| MONGO_COLLECTION | The name of the mongo's collection  | `Smartedexam`                            | no       |
+| MONGO_DATABASE   | The name of the mongo's database    | `       `                                | no       |
+| MONGO_COLLECTION | The name of the mongo's collection  | `       `                                | no       |
 | **Application**  |                                     |                                          |          | 
 | APP_PORT         | The port of the application         | `8000`                                   | no       |
 | APP_DEBUG        | Enables hot reloading for debugging | `False`                                  | no       |

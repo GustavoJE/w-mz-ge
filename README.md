@@ -18,24 +18,22 @@ The following packages are required by smarted-test
 | git          | https://git-scm.com/book/en/v2/Getting-Started-Installing-Git | `latest`                 |
 | pipenv       | https://pypi.org/project/pipenv/                              | `2020.6.2`               |
 | mongodb      | https://docs.mongodb.com/manual/installation/                 | `3.9.0`                  |
-| flask-restx  | https://flask-restx.readthedocs.io/en/latest/                 | `latest`                 |
-| flask-jwt-ext| https://flask-jwt-extended.readthedocs.io/en/stable/          | `latest`                 |
-| faker        | https://faker.readthedocs.io/en/master/                       | `latest`                 |
+
 
 ## Directory structure
 
 ```bash
-$ tree
 ├── config
+├── seeds
 ├── app.py
-├── seeds.py
-├── signup.py
 └── README.md
 ```
 
 | Dirname | Description                                                         |
 |---------|---------------------------------------------------------------------|
 | config  | This directory contains `application` and `database` configurations |
+| seeds   | This directory contains scripts that generate dummy data for testing|
+
 
 
 ## Installation
@@ -50,17 +48,13 @@ $ git clone git@github.com:GustavoJE/w-mz-ge.git
 $ pipenv install 
 ```
 
-3. Run signup.py
+3. Run seeds
 ```bash
-$ python signup.py
+$ python seeds/create_admin_credentials.py
+$ python seeds/create_users.py
 ```
 
-4. Run seeds.py
-```bash
-$ python seeds.py
-```
-
-5. Run the application
+4. Run the application
 ```bash
 $ python app.py
 ```
@@ -70,12 +64,13 @@ $ python app.py
 | Name             | Description                         | Default Value                            | Required |
 |------------------|-------------------------------------|------------------------------------------|----------|
 | **Database**     |                                     |                                          |          |
-| MONGO_HOST       | The hostname of the mongodb         | `mongodb://admin:admin@localhost:27017/` | **yes**  |
-| MONGO_DATABASE   | The name of the mongo's database    | `       `                                | no       |
-| MONGO_COLLECTION | The name of the mongo's collection  | `       `                                | no       |
+| MONGO_URI        | The hostname of the mongodb         | `mongodb://admin:admin@localhost:27017/` | **yes**  |
+| MONGO_DATABASE   | The name of the mongo's database    | `       `                                | **yes**  |
+| MONGO_COLLECTION | The name of the mongo's collection  | `       `                                | **yes**  |
 | **Application**  |                                     |                                          |          | 
 | APP_PORT         | The port of the application         | `8000`                                   | no       |
 | APP_DEBUG        | Enables hot reloading for debugging | `False`                                  | no       |
+| APP_SECRET_KEY   | Enables JWT encryption              | `       `                                | **yes**  |
 
 
 ## Documentation

@@ -12,7 +12,7 @@ import json
 app = Flask(__name__)
 api = Api(app, version='1.0', title='w-mz-ge', description='Smarted test')
 ns = api.namespace('', description="Main app")
-app.config["SECRET_KEY"] = "super-secret"
+app.config["SECRET_KEY"] = config["secret-key"]
 
 jwt = JWTManager(app)
 

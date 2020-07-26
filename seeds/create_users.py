@@ -1,5 +1,5 @@
 from faker import Faker
-from config.databases import mycollection
+from databases import mycollection
 
 user = Faker()
 for _ in range(20):
@@ -18,4 +18,4 @@ for _ in range(20):
     }
     userid = mycollection.insert_one(document)
     
-    
+print("OK")

@@ -18,6 +18,12 @@ jwt = JWTManager(app)
 
 
 
+"""
+The login route allows for authentication. 
+If valid admin credentials are sent, a JWT token is returned. 
+Said token is required for the /users methods
+"""
+
 @app.route('/login', methods=['POST'])
 def login():
     if not request.is_json:
